@@ -19,7 +19,7 @@ defmodule Howtosay.Mixfile do
   def application do
     [mod: {Howtosay, []},
      applications: [:phoenix, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :httpoison, :ja_serializer]]
+                    :phoenix_ecto, :postgrex, :ja_serializer]]
   end
 
   # Specifies which paths to compile per environment.
@@ -36,8 +36,7 @@ defmodule Howtosay.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:ja_serializer, "0.6.1"},
-      {:httpoison, "0.8.0"}
+      {:ja_serializer, "0.6.1"}
     ]
   end
 
