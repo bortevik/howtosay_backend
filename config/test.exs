@@ -7,7 +7,7 @@ config :howtosay, Howtosay.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger, level: :debug # :warn :info :error
 
 # Configure your database
 config :howtosay, Howtosay.Repo,
