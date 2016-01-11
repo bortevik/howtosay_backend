@@ -36,7 +36,8 @@ defmodule Howtosay.Mixfile do
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:ja_serializer, "0.6.1"}
+      {:ja_serializer, "0.6.1"},
+      {:cors_plug, "~> 0.1.4"}
     ]
   end
 

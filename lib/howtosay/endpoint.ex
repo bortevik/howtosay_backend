@@ -33,5 +33,7 @@ defmodule Howtosay.Endpoint do
     key: "_howtosay_key",
     signing_salt: "WD4YNkRS"
 
+  plug CORSPlug, [origin: "http://localhost:4201"]
+
   plug Howtosay.Router
 end
