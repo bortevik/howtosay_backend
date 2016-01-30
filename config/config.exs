@@ -19,10 +19,6 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-# Import environment specific config. This must remain at the bottom
-# of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
-
 # Configure phoenix generators
 config :phoenix, :generators,
   migration: true,
@@ -30,3 +26,17 @@ config :phoenix, :generators,
 
 config :plug, :mimes, %{"application/vnd.api+json" => ["json-api"]}
 
+config :guardian, Guardian,
+  issuer: "Howtosay.#{Mix.env}",
+  ttl: { 30, :days },
+  verify_issuer: true,
+  secret_key: "uzZKL9DaGUb0foWi6z7RRAjHbE1UltblNB/qM2SqM249mM0cv6lLThT1hKHCjjP4",
+  serializer: Howtosay.GuardianSerializer,
+  hooks: GuardianDb
+
+config :guardian_db, GuardianDb,
+  repo: Howtosay.Repo
+
+# Import environment specific config. This must remain at the bottom
+# of this file so it overrides the configuration defined above.
+import_config "#{Mix.env}.exs"

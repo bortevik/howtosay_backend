@@ -1,11 +1,24 @@
-# Script for populating the database. You can run it as:
-#
-#     mix run priv/repo/seeds.exs
-#
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-#     Howtosay.Repo.insert!(%Howtosay.SomeModel{})
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
+import Howtosay.Repo, only: [insert!: 1]
+alias Howtosay.User
+alias Howtosay.Question
+alias Howtosay.Answer
+
+defmodule Howtosay.Seed do
+  def create_user(i) do
+    user = insert! User.registration_changeset(%User{}, %{name: "Some #{i}", email: "some#{i}@some.com", password: "123456"})
+
+    Enum.each 1..10, fn _ -> create_question(user) end
+  end
+
+  def create_question(user) do
+    question = insert! %Question{text: Faker.Lorem.Shakespeare.as_you_like_it, user_id: user.id}
+
+    Enum.each 1..10, fn _ -> create_answer(user, question) end
+  end
+
+  def create_answer(user, question) do
+    insert! %Answer{text: Faker.Lorem.Shakespeare.Ru.romeo_and_juliet, question_id: question.id, user_id: user.id}
+  end
+end
+
+Enum.each 1..5, &Howtosay.Seed.create_user/1

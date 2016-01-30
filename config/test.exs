@@ -17,3 +17,5 @@ config :howtosay, Howtosay.Repo,
   database: "howtosay_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :comeonin, :pbkdf2_rounds, 1

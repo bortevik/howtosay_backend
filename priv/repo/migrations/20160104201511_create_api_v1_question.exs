@@ -3,7 +3,7 @@ defmodule Howtosay.Repo.Migrations.CreateQuestion do
 
   def change do
     create table(:questions) do
-      add :text, :string
+      add :text, :text
 
       timestamps
     end

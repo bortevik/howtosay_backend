@@ -18,8 +18,8 @@ defmodule Howtosay.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Howtosay, []},
-     applications: [:phoenix, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :ja_serializer]]
+     applications: [:phoenix, :cowboy, :logger, :gettext, :comeonin,
+                    :phoenix_ecto, :postgrex, :ja_serializer, :faker]]
   end
 
   # Specifies which paths to compile per environment.
@@ -37,7 +37,11 @@ defmodule Howtosay.Mixfile do
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
       {:ja_serializer, "0.6.1"},
-      {:cors_plug, "~> 0.1.4"}
+      {:cors_plug, "~> 0.1.4"},
+      {:guardian, "~> 0.9.0"},
+      {:guardian_db, "0.4.0"},
+      {:comeonin, "~> 2.0.0"},
+      {:faker, "~> 0.5", only: [:test, :dev]}
     ]
   end
 

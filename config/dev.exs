@@ -30,3 +30,4 @@ config :howtosay, Howtosay.Repo,
   database: "howtosay_dev",
   hostname: "localhost",
   pool_size: 10
+

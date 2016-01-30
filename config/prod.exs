@@ -40,7 +40,7 @@ config :logger, level: :info
 #
 #     config :howtosay, Howtosay.Endpoint,
 #       force_ssl: [hsts: true]
-#
+# 
 # Check `Plug.SSL` for all available options in `force_ssl`.
 
 # ## Using releases
@@ -59,6 +59,8 @@ config :logger, level: :info
 # for the new static assets to be served after a hot upgrade:
 #
 #     config :howtosay, Howtosay.Endpoint, root: "."
+
+config :comeonin, :pbkdf2_rounds, 1_000_000
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.

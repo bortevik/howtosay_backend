@@ -4,6 +4,7 @@ defmodule Howtosay.Question do
   schema "questions" do
     field :text, :string
     has_many :answers, Howtosay.Answer
+    belongs_to :user, Howtosay.User
 
     timestamps
   end

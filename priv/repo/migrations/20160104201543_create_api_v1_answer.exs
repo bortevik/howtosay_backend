@@ -3,7 +3,7 @@ defmodule Howtosay.Repo.Migrations.CreateAnswer do
 
   def change do
     create table(:answers) do
-      add :text, :string
+      add :text, :text
       add :question_id, references(:questions, on_delete: :delete_all)
 
       timestamps
