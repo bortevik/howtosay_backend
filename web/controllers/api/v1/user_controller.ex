@@ -15,8 +15,8 @@ defmodule Howtosay.Api.V1.UserController do
 
     case Repo.insert(changeset) do
       {:ok, user} ->
-        # send confirmation email
         conn
+        |> send_confirmation_email(user)
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
         |> json(UserSerializer.format(user))
@@ -66,5 +66,13 @@ defmodule Howtosay.Api.V1.UserController do
       _ ->
         conn |> put_status(403) |> json(nil) |> halt()
     end
+  end
+
+  def send_confirmation_email(conn, user) do
+    client_host = Application.get_env :howtosay, :client_host
+    link = client_host <> "/email_confirmation/" <> user.confirmation_token
+
+    Howtosay.Mailer.send_confirmation_email(user.email, %{confirmation_link: link})
+    conn
   end
 end

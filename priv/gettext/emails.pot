@@ -1,0 +1,11 @@
+## This file is a PO Template file. `msgid`s here are often extracted from
+## source code; add new translations manually only if they're dynamic
+## translations that can't be statically extracted. Run `mix
+## gettext.extract` to bring this file up to date. Leave `msgstr`s empty as
+## changing them here as no effect; edit them in PO (`.po`) files instead.
+#: lib/howtosay/mailer.ex:15
+msgid "Confirmation email for Howtosay.site"
+msgstr ""
+
+msgid "<p>To finish registration on Howtosay.site follow link below.</p>\n<p><a href=\"%{confirmation_link}\">%{confirmation_link}</a></p>\n"
+msgstr ""

@@ -18,7 +18,7 @@ defmodule Howtosay.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Howtosay, []},
-     applications: [:phoenix, :cowboy, :logger, :gettext, :comeonin,
+     applications: [:phoenix, :cowboy, :logger, :gettext, :comeonin, :phoenix_html,
                     :phoenix_ecto, :postgrex, :ja_serializer, :faker]]
   end
 
@@ -31,17 +31,19 @@ defmodule Howtosay.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.1.1"},
+      {:phoenix, "~> 1.1.4"},
       {:phoenix_ecto, "~> 2.0"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.9"},
       {:cowboy, "~> 1.0"},
-      {:ja_serializer, "0.6.1"},
+      {:ja_serializer, "0.7.0"},
       {:cors_plug, "~> 0.1.4"},
       {:guardian, "~> 0.9.0"},
       {:guardian_db, "0.4.0"},
       {:comeonin, "~> 2.0.0"},
-      {:faker, "~> 0.5", only: [:test, :dev]}
+      {:faker, "~> 0.5", only: [:test, :dev]},
+      {:phoenix_html, "~> 2.5.0"},
+      {:mailgun, "~> 0.1.2"}
     ]
   end
 
