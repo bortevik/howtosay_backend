@@ -36,6 +36,7 @@ defmodule Howtosay.Web do
 
       import Howtosay.Router.Helpers
       import Howtosay.Gettext
+      import Howtosay.ControllerHelpers
     end
   end
 

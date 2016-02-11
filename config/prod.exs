@@ -61,6 +61,7 @@ config :logger, level: :info
 #     config :howtosay, Howtosay.Endpoint, root: "."
 
 config :comeonin, :pbkdf2_rounds, 1_000_000
+config :howtosay, client_host: "http://howtosay.site"
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.

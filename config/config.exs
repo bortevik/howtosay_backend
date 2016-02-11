@@ -34,8 +34,9 @@ config :guardian, Guardian,
   serializer: Howtosay.GuardianSerializer,
   hooks: GuardianDb
 
-config :guardian_db, GuardianDb,
-  repo: Howtosay.Repo
+config :guardian_db, GuardianDb, repo: Howtosay.Repo
+
+config :howtosay, client_host: "http://localhost:4201"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

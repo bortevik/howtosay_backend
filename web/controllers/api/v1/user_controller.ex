@@ -1,6 +1,5 @@
 defmodule Howtosay.Api.V1.UserController do
   use Howtosay.Web, :controller
-  use Guardian.Phoenix.Controller
 
   alias Howtosay.User
   alias Howtosay.Api.V1.UserSerializer
@@ -21,9 +20,7 @@ defmodule Howtosay.Api.V1.UserController do
         |> put_resp_header("location", user_path(conn, :show, user))
         |> json(UserSerializer.format(user))
       {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Howtosay.ChangesetView, "error.json", changeset: changeset)
+        error_json conn, 422, changeset
     end
   end
 
@@ -45,9 +42,7 @@ defmodule Howtosay.Api.V1.UserController do
         # if email changed send confirmation email
         json conn, UserSerializer.format(user)
       {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Howtosay.ChangesetView, "error.json", changeset: changeset)
+        error_json conn, 422, changeset
     end
   end
 
