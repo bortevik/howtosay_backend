@@ -28,21 +28,13 @@ defmodule Howtosay.User do
     model
     |> cast(params, ~w(name email password), [])
     |> changeset()
+    |> put_confirmation_token()
   end
 
   def update_changeset(model, params \\ :empty) do
     model
     |> cast(params, [], ~w(name email password))
     |> changeset()
-  end
-
-  defp put_password_hash(changeset) do
-    case Ecto.Changeset.fetch_change(changeset, :password) do
-      { :ok, password } ->
-        changeset
-        |> Ecto.Changeset.put_change(:hashed_password, Comeonin.Pbkdf2.hashpwsalt(password))
-      :error -> changeset
-    end
   end
 
   def login_changeset(model, params) do
@@ -54,6 +46,20 @@ defmodule Howtosay.User do
   def valid_password?(nil, _), do: false
   def valid_password?(_, nil), do: false
   def valid_password?(password, crypted), do: Comeonin.Pbkdf2.checkpw(password, crypted)
+
+  defp put_password_hash(changeset) do
+    case Ecto.Changeset.fetch_change(changeset, :password) do
+      { :ok, password } ->
+        changeset
+        |> Ecto.Changeset.put_change(:hashed_password, Comeonin.Pbkdf2.hashpwsalt(password))
+      :error -> changeset
+    end
+  end
+
+  defp put_confirmation_token(changeset) do
+    changeset
+    |> Ecto.Changeset.put_change(:confirmation_token, generate_token())
+  end
 
   defp validate_password(changeset) do
     case Ecto.Changeset.get_field(changeset, :hashed_password) do
@@ -68,4 +74,8 @@ defmodule Howtosay.User do
   end
 
   defp password_incorrect_error(changeset), do: Ecto.Changeset.add_error(changeset, :password, "is incorrect")
+
+  defp generate_token(length \\ 60) do
+    :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
+  end
 end
