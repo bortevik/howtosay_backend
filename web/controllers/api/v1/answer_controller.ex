@@ -32,9 +32,7 @@ defmodule Howtosay.Api.V1.AnswerController do
         |> put_resp_header("location", answer_path(conn, :show, answer))
         |> json(AnswerSerializer.format(answer, conn))
       {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Howtosay.ChangesetView, "error.json", changeset: changeset)
+        error_json conn, 422, changeset
     end
   end
 
@@ -55,9 +53,7 @@ defmodule Howtosay.Api.V1.AnswerController do
       {:ok, answer} ->
         json(conn, AnswerSerializer.format(answer, conn))
       {:error, changeset} ->
-        conn
-        |> put_status(:unprocessable_entity)
-        |> render(Howtosay.ChangesetView, "error.json", changeset: changeset)
+        error_json conn, 422, changeset
     end
   end
 
