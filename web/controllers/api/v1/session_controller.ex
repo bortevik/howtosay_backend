@@ -2,7 +2,6 @@ defmodule Howtosay.Api.V1.SessionController do
   use Howtosay.Web, :controller
 
   alias Howtosay.User
-  alias Howtosay.Api.V1.UserSerializer
 
   plug Guardian.Plug.EnsureAuthenticated, %{handler: __MODULE__} when action in [:update]
   plug :scrub_params, "email" when action in [:create]
@@ -51,15 +50,5 @@ defmodule Howtosay.Api.V1.SessionController do
 
   def unauthenticated(conn, _params) do
     send_resp(conn, 401, "")
-  end
-
-  defp response_with_token(conn, user, claims, jwt) do
-    exp = Map.get(claims, "exp")
-    response_json = user |> UserSerializer.format(conn) |> Map.put(:token, jwt)
-
-    conn
-    |> put_resp_header("authorization", "Bearer #{jwt}")
-    |> put_resp_header("x-expires", "#{exp}")
-    |> json(response_json)
   end
 end

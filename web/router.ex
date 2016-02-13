@@ -21,6 +21,8 @@ defmodule Howtosay.Router do
       resources "/questions", QuestionController, except: [:new, :edit]
       resources "/answers", AnswerController, except: [:new, :edit]
       resources "/users", UserController, except: [:new, :edit, :index]
+
+      post "/users/email_confirmation", UserController, :email_confirmation, as: :email_confirmation
     end
   end
 end

@@ -2,12 +2,12 @@ defmodule Howtosay.Api.V1.UserController do
   use Howtosay.Web, :controller
 
   alias Howtosay.User
-  alias Howtosay.Api.V1.UserSerializer
-  alias Howtosay.SessionController
+  alias Howtosay.Api.V1.{SessionController, UserSerializer}
 
-  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when not action in [:create, :show]
+  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when not action in [:create, :show, :email_confirmation]
   plug :authorize_for_own_resource when action in [:update, :delete]
   plug :scrub_params, "data" when action in [:create, :update]
+  plug :scrub_params, "token" when action in [:email_confirmation]
 
   def create(conn, %{"data" => %{"attributes" => user_params}}) do
     changeset = User.registration_changeset(%User{}, user_params)
@@ -51,6 +51,22 @@ defmodule Howtosay.Api.V1.UserController do
 
     Repo.delete!(user)
     send_resp(conn, :no_content, "")
+  end
+
+  def email_confirmation(conn, %{"token" => token}) do
+    result = with %User{} = user <- Repo.get_by(User, confirmation_token: token),
+              do: Repo.update(user, confirmation_token: nil, confirmed_at: Ecto.DateTime.utc())
+
+    case result do
+      {:ok, user} ->
+        new_conn = Guardian.Plug.api_sign_in(conn, user)
+        {:ok, claims} = Guardian.Plug.claims(new_conn)
+        jwt = Guardian.Plug.current_token(new_conn)
+
+        response_with_token(new_conn, user, claims, jwt)
+      _ ->
+        conn |> put_status(422) |> json(nil)
+    end
   end
 
   def authorize_for_own_resource(conn, %{"id" => id}) do
