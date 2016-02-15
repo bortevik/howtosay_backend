@@ -4,10 +4,10 @@ defmodule Howtosay.ControllerHelpers do
 
   alias Howtosay.Api.V1.UserSerializer
 
-  def error_json(conn, status, changeset) do
+  def error_json(conn, status, error) do
     conn
     |> put_status(status)
-    |> json(JaSerializer.EctoErrorSerializer.format(changeset, conn))
+    |> json(get_error(error, conn))
   end
 
   def response_with_token(conn, user, claims, jwt) do
@@ -19,4 +19,11 @@ defmodule Howtosay.ControllerHelpers do
     |> put_resp_header("x-expires", "#{exp}")
     |> json(response_json)
   end
+
+  defp get_error(%Ecto.Changeset{} = changeset, conn) do
+    JaSerializer.EctoErrorSerializer.format(changeset, conn)
+  end
+
+  defp get_error(error, _), do: error
+
 end

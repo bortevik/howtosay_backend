@@ -9,7 +9,7 @@ defmodule Howtosay.Api.V1.SessionController do
   plug :scrub_params, "token" when action in [:update]
 
   def create(conn, params) do
-    user = User |> where(email: ^params["email"]) |> Repo.one
+    user = Repo.get_by User, email: params["email"]
 
     if user do
       changeset = User.login_changeset(user, params)
@@ -21,10 +21,15 @@ defmodule Howtosay.Api.V1.SessionController do
 
         response_with_token(new_conn, user, claims, jwt)
       else
-        send_resp(conn, 401, "")
+        case Keyword.fetch(changeset.errors, :email) do
+          {:ok, message} ->
+            error_json(conn, 401, %{error: "Email " <> message})
+          :error ->
+            error_json(conn, 401, %{error: "Wrong email or password"})
+        end
       end
     else
-      send_resp(conn, 401, "")
+      error_json(conn, 401, %{error: "Wrong email or password"})
     end
   end
 
