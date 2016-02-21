@@ -23,6 +23,8 @@ defmodule Howtosay.Web do
       import Ecto
       import Ecto.Changeset
       import Ecto.Query, only: [from: 1, from: 2]
+
+      alias Howtosay.Repo
     end
   end
 

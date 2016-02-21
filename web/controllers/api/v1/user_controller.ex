@@ -55,7 +55,7 @@ defmodule Howtosay.Api.V1.UserController do
 
   def email_confirmation(conn, %{"token" => token}) do
     result = with %User{} = user <- Repo.get_by(User, confirmation_token: token),
-              do: Repo.update(user, confirmation_token: nil, confirmed_at: Ecto.DateTime.utc())
+              do: Repo.confirm_email(user)
 
     case result do
       {:ok, user} ->

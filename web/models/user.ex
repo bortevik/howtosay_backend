@@ -46,6 +46,12 @@ defmodule Howtosay.User do
     |> fetch_confirmation
   end
 
+  def confirm_email(model) do
+    model
+    |> change(%{confirmation_token: nil, confirmed_at: Ecto.DateTime.utc()})
+    |> Repo.update()
+  end
+
   def valid_password?(nil, _), do: false
   def valid_password?(_, nil), do: false
   def valid_password?(password, crypted), do: Comeonin.Pbkdf2.checkpw(password, crypted)
