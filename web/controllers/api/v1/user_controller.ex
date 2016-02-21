@@ -4,10 +4,11 @@ defmodule Howtosay.Api.V1.UserController do
   alias Howtosay.User
   alias Howtosay.Api.V1.{SessionController, UserSerializer}
 
-  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when not action in [:create, :show, :email_confirmation]
+  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when action in [:update, :delete]
   plug :authorize_for_own_resource when action in [:update, :delete]
   plug :scrub_params, "data" when action in [:create, :update]
   plug :scrub_params, "token" when action in [:email_confirmation]
+  plug :scrub_params, "email" when action in [:resend_confirmation_email]
 
   def create(conn, %{"data" => %{"attributes" => user_params}}) do
     changeset = User.registration_changeset(%User{}, user_params)
@@ -69,7 +70,20 @@ defmodule Howtosay.Api.V1.UserController do
     end
   end
 
-  def authorize_for_own_resource(conn, %{"id" => id}) do
+  def resend_confirmation_email(conn, %{"email" => email}) do
+    user = Repo.get_by(User, email: email)
+
+    case user do
+      nil ->
+        conn |> put_status(404) |> json(nil)
+      user ->
+        send_confirmation_email(conn, user)
+        |> put_status(200)
+        |> json(nil)
+    end
+  end
+
+  defp authorize_for_own_resource(conn, %{"id" => id}) do
     current_user_id = Guardian.Plug.current_resource(conn).id
     case String.to_integer(id) do
       ^current_user_id ->
@@ -79,7 +93,7 @@ defmodule Howtosay.Api.V1.UserController do
     end
   end
 
-  def send_confirmation_email(conn, user) do
+  defp send_confirmation_email(conn, user) do
     client_host = Application.get_env :howtosay, :client_host
     link = client_host <> "/email_confirmation/" <> user.confirmation_token
 

@@ -23,6 +23,7 @@ defmodule Howtosay.Router do
       resources "/users", UserController, except: [:new, :edit, :index]
 
       post "/users/email_confirmation", UserController, :email_confirmation, as: :email_confirmation
+      post "/users/resend_confirmation_email", UserController, :resend_confirmation_email, as: :resend_confirmation_email
     end
   end
 end
