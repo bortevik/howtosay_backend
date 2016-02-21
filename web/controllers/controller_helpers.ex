@@ -25,5 +25,4 @@ defmodule Howtosay.ControllerHelpers do
   end
 
   defp get_error(error, _), do: error
-
 end
