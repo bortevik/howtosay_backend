@@ -2,6 +2,7 @@ import Howtosay.Repo, only: [insert!: 1]
 alias Howtosay.User
 alias Howtosay.Question
 alias Howtosay.Answer
+alias Howtosay.Language
 
 defmodule Howtosay.Seed do
   def create_user(i) do
@@ -19,6 +20,16 @@ defmodule Howtosay.Seed do
   def create_answer(user, question) do
     insert! %Answer{text: Faker.Lorem.Shakespeare.Ru.romeo_and_juliet, question_id: question.id, user_id: user.id}
   end
+
+  def create_languages() do
+    [
+      %Language{name: "English", code: "en"},
+      %Language{name: "Russain", code: "ru"},
+      %Language{name: "Arabic", code: "ar"}
+    ]
+    |> Enum.each(&insert!(&1))
+  end
 end
 
 Enum.each 1..5, &Howtosay.Seed.create_user/1
+Howtosay.Seed.create_languages()
