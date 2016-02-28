@@ -18,6 +18,7 @@ defmodule Howtosay.Router do
       post "/token_refresh", SessionController, :update, as: :token_refresh
       delete "/signout", SessionController, :delete, as: :signout
 
+      resources "/languages", LanguageController, only: [:index, :show]
       resources "/questions", QuestionController, except: [:new, :edit]
       resources "/answers", AnswerController, except: [:new, :edit]
       resources "/users", UserController, except: [:new, :edit, :index]

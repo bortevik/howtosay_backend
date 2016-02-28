@@ -5,6 +5,9 @@ defmodule Howtosay.Language do
     field :name, :string
     field :code, :string
 
+    has_many :users, Howtosay.User
+    has_many :questions, Howtosay.Question
+
     timestamps
   end
 

@@ -3,8 +3,11 @@ defmodule Howtosay.Question do
 
   schema "questions" do
     field :text, :string
+
     has_many :answers, Howtosay.Answer
     belongs_to :user, Howtosay.User
+    belongs_to :language_from, Howtosay.Language
+    belongs_to :language_to, Howtosay.Language
 
     timestamps
   end

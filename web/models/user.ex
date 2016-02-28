@@ -14,6 +14,7 @@ defmodule Howtosay.User do
 
     has_many :questions, Howtosay.Question
     has_many :answers, Howtosay.Answer
+    belongs_to :language, Howtosay.Language
 
     timestamps
   end
