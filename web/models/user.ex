@@ -29,15 +29,17 @@ defmodule Howtosay.User do
 
   def registration_changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(name email password), [])
+    |> cast(params, ~w(name email password), ~w(language_id))
     |> changeset()
     |> put_confirmation_token()
+    |> ensure_lanuage_exists_or_default()
   end
 
   def update_changeset(model, params \\ :empty) do
     model
-    |> cast(params, [], ~w(name email password))
+    |> cast(params, [], ~w(name email password language_id))
     |> changeset()
+    |> foreign_key_constraint(:language_id)
   end
 
   def login_changeset(model, params) do
@@ -95,4 +97,20 @@ defmodule Howtosay.User do
   defp generate_token(length \\ 60) do
     :crypto.strong_rand_bytes(length) |> Base.url_encode64 |> binary_part(0, length)
   end
+
+  defp ensure_lanuage_exists_or_default(changeset) do
+    language_id = Changeset.get_change(changeset, :language_id)
+    case get_language(language_id) do
+      nil ->
+        default_language = Repo.get_by(Howtosay.Language, code: "en")
+        Changeset.put_change(changeset, :language_id, default_language.id)
+        changeset
+      _ ->
+        changeset
+    end
+  end
+
+  defp get_language(nil), do: nil
+  defp get_language(id), do: Repo.get(Howtosay.Language, id)
 end
+

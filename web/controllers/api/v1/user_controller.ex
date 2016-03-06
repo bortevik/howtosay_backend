@@ -10,7 +10,8 @@ defmodule Howtosay.Api.V1.UserController do
   plug :scrub_params, "token" when action in [:email_confirmation]
   plug :scrub_params, "email" when action in [:resend_confirmation_email]
 
-  def create(conn, %{"data" => %{"attributes" => user_params}}) do
+  def create(conn, %{"data" => %{"attributes" => params, "relationships" => relations}}) do
+    user_params = apply_relation(params, relations, "language")
     changeset = User.registration_changeset(%User{}, user_params)
 
     case Repo.insert(changeset) do
@@ -34,7 +35,8 @@ defmodule Howtosay.Api.V1.UserController do
     end
   end
 
-  def update(conn, %{"id" => id, "data" => %{"attributes" => user_params}}) do
+  def update(conn, %{"id" => id, "data" => %{"attributes" => params, "relationships" => relations}}) do
+    user_params = apply_relation(params, relations, "language")
     user = Repo.get!(User, id)
     changeset = User.update_changeset(user, user_params)
 

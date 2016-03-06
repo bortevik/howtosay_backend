@@ -20,9 +20,8 @@ defmodule Howtosay.Api.V1.AnswerController do
 
   def index(conn, _), do: json(conn, %{})
 
-  def create(conn, %{"data" => data}) do
-    question_id = data["relationships"]["question"]["data"]["id"]
-    params = data["attributes"] |> Map.put("question_id", question_id)
+  def create(conn, %{"data" => %{"attributes" => attrs, "relationships" => relations}}) do
+    params = apply_relation(attrs, relations, "question")
     changeset = Answer.changeset(%Answer{}, params)
 
     case Repo.insert(changeset) do

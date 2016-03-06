@@ -4,6 +4,11 @@ defmodule Howtosay.ControllerHelpers do
 
   alias Howtosay.Api.V1.UserSerializer
 
+  def apply_relation(params, relations, relation) do
+    id = relations[relation]["data"]["id"]
+    Map.put(params, relation <> "_id", id)
+  end
+
   def error_json(conn, status, error) do
     conn
     |> put_status(status)
