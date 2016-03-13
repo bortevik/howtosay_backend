@@ -85,8 +85,10 @@ defmodule Howtosay.Api.V1.UserController do
     end
   end
 
-  defp authorize_for_own_resource(conn, %{"id" => id}) do
+  defp authorize_for_own_resource(conn, _) do
+    id = conn.params["id"]
     current_user_id = Guardian.Plug.current_resource(conn).id
+
     case String.to_integer(id) do
       ^current_user_id ->
         conn
