@@ -24,6 +24,7 @@ defmodule Howtosay.User do
     |> validate_length(:name, min: 1, max: 20)
     |> validate_length(:password, min: 6, max: 100)
     |> unique_constraint(:email)
+    |> validate_format(:email, ~r/@/)
     |> put_password_hash()
   end
 
@@ -39,6 +40,7 @@ defmodule Howtosay.User do
     model
     |> cast(params, [], ~w(name email password language_id))
     |> changeset()
+    |> ensure_not_nil(~w(name email password language_id)a)
     |> foreign_key_constraint(:language_id)
   end
 
@@ -112,5 +114,16 @@ defmodule Howtosay.User do
 
   defp get_language(nil), do: nil
   defp get_language(id), do: Repo.get(Howtosay.Language, id)
+
+  defp ensure_not_nil(changeset, []), do: changeset
+  defp ensure_not_nil(changeset, [head | tail]) do
+    case Changeset.get_change(changeset, head) do
+      nil ->
+        Changeset.delete_change(changeset, head)
+        |> ensure_not_nil(tail)
+      _ ->
+        ensure_not_nil(changeset, tail)
+    end
+  end
 end
 
