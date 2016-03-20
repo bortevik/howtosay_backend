@@ -43,7 +43,8 @@ defmodule Howtosay.Mixfile do
       {:comeonin, "~> 2.0.0"},
       {:faker, "~> 0.5", only: [:test, :dev]},
       {:phoenix_html, "~> 2.5.0"},
-      {:mailgun, "~> 0.1.2"}
+      {:mailgun, "~> 0.1.2"},
+      {:scrivener, "~> 1.1.2"}
     ]
   end
 

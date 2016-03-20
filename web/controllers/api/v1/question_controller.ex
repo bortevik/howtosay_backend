@@ -7,11 +7,11 @@ defmodule Howtosay.Api.V1.QuestionController do
   plug :scrub_params, "id" when action in [:show, :update, :delete]
   plug :scrub_params, "data" when action in [:create, :update]
 
-  def index(conn, _params) do
+  def index(conn, params) do
     questions =
       Question
       |> order_by(desc: :id)
-      |> Repo.all()
+      |> Repo.paginate(page: params["page"]["page"] || 1, page_size: params["page"]["page_size"] || 100)
       |> QuestionSerializer.format(conn)
 
     json(conn, questions)
