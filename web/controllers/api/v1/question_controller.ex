@@ -17,8 +17,12 @@ defmodule Howtosay.Api.V1.QuestionController do
     json(conn, questions)
   end
 
-  def create(conn, %{"data" => %{"attributes" => question_params}}) do
-    changeset = Question.changeset(%Question{}, question_params)
+  def create(conn, %{"data" => %{"attributes" => params, "relationships" => relations}}) do
+    question_params =
+      params
+      |> apply_relation(relations, "language_from")
+      |> apply_relation(relations, "language_to")
+    changeset = Question.create_changeset(%Question{}, question_params)
 
     case Repo.insert(changeset) do
       {:ok, question} ->
@@ -42,7 +46,7 @@ defmodule Howtosay.Api.V1.QuestionController do
 
   def update(conn, %{"id" => id, "data" => %{"attributes" => question_params}}) do
     question = Repo.get!(Question, id)
-    changeset = Question.changeset(question, question_params)
+    changeset = Question.update_changeset(question, question_params)
 
     case Repo.update(changeset) do
       {:ok, question} ->

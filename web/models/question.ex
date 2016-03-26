@@ -12,11 +12,15 @@ defmodule Howtosay.Question do
     timestamps
   end
 
-  @required_fields ~w(text)
-  @optional_fields ~w()
-
-  def changeset(model, params \\ :empty) do
+  def create_changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, ~w(text language_from_id language_to_id), [])
+    |> foreign_key_constraint(:language_from_id)
+    |> foreign_key_constraint(:language_to_id)
+  end
+
+  def update_changeset(model, params \\ :empty) do
+    model
+    |> cast(params, ~w(text), [])
   end
 end
