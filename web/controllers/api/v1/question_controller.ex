@@ -10,6 +10,8 @@ defmodule Howtosay.Api.V1.QuestionController do
   def index(conn, params) do
     questions =
       Question
+      |> filter_by_langauge_from(params["language_from_id"])
+      |> filter_by_language_to(params["language_to_ids"])
       |> order_by(desc: :id)
       |> Repo.paginate(page: params["page"]["page"] || 1, page_size: params["page"]["page_size"] || 100)
       |> QuestionSerializer.format(conn)
@@ -63,4 +65,10 @@ defmodule Howtosay.Api.V1.QuestionController do
 
     send_resp(conn, :no_content, "")
   end
+
+  defp filter_by_langauge_from(query, nil), do: query
+  defp filter_by_langauge_from(query, id), do: query |> where(language_from_id: ^id)
+
+  defp filter_by_language_to(query, nil), do: query
+  defp filter_by_language_to(query, ids), do: query |> where([q], q.language_to_id in ^ids)
 end
