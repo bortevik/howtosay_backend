@@ -4,6 +4,8 @@ defmodule Howtosay.Api.V1.QuestionController do
   alias Howtosay.Question
   alias Howtosay.Api.V1.QuestionSerializer
 
+  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when action in [:create, :update, :delete]
+  plug :authorize_for_own_resource when action in [:update, :delete]
   plug :scrub_params, "id" when action in [:show, :update, :delete]
   plug :scrub_params, "data" when action in [:create, :update]
 
@@ -20,10 +22,12 @@ defmodule Howtosay.Api.V1.QuestionController do
   end
 
   def create(conn, %{"data" => %{"attributes" => params, "relationships" => relations}}) do
+    current_user_id = Guardian.Plug.current_resource(conn).id
     question_params =
       params
       |> apply_relation(relations, "language_from")
       |> apply_relation(relations, "language_to")
+      |> Map.put("user_id", current_user_id)
     changeset = Question.create_changeset(%Question{}, question_params)
 
     case Repo.insert(changeset) do
@@ -71,4 +75,17 @@ defmodule Howtosay.Api.V1.QuestionController do
 
   defp filter_by_language_to(query, nil), do: query
   defp filter_by_language_to(query, ids), do: query |> where([q], q.language_to_id in ^ids)
+
+  defp authorize_for_own_resource(conn, _) do
+    user_id = with question <- Repo.get(Question, conn.params["id"]),
+                   do: question.user_id
+    current_user_id = Guardian.Plug.current_resource(conn).id
+
+    case user_id do
+      ^current_user_id ->
+        conn
+      _ ->
+        conn |> put_status(403) |> json(nil) |> halt()
+    end
+  end
 end

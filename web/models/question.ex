@@ -14,9 +14,10 @@ defmodule Howtosay.Question do
 
   def create_changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(text language_from_id language_to_id), [])
+    |> cast(params, ~w(text language_from_id language_to_id user_id), [])
     |> foreign_key_constraint(:language_from_id)
     |> foreign_key_constraint(:language_to_id)
+    |> foreign_key_constraint(:user_id)
   end
 
   def update_changeset(model, params \\ :empty) do
