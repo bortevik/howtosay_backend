@@ -4,6 +4,8 @@ defmodule Howtosay.Api.V1.AnswerController do
   alias Howtosay.Answer
   alias Howtosay.Api.V1.AnswerSerializer
 
+  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when action in [:create, :update, :delete]
+  plug :authorize_for_own_resource when action in [:update, :delete]
   plug :scrub_params, "id" when action in [:show, :update, :delete]
   plug :scrub_params, "data" when action in [:create, :update]
 
@@ -21,8 +23,13 @@ defmodule Howtosay.Api.V1.AnswerController do
   def index(conn, _), do: json(conn, %{})
 
   def create(conn, %{"data" => %{"attributes" => attrs, "relationships" => relations}}) do
-    params = apply_relation(attrs, relations, "question")
-    changeset = Answer.changeset(%Answer{}, params)
+    current_user_id = Guardian.Plug.current_resource(conn).id
+    params =
+      attrs
+      |> apply_relation(relations, "question")
+      |> Map.put("user_id", current_user_id)
+
+    changeset = Answer.create_changeset(%Answer{}, params)
 
     case Repo.insert(changeset) do
       {:ok, answer} ->
@@ -46,7 +53,7 @@ defmodule Howtosay.Api.V1.AnswerController do
 
   def update(conn, %{"id" => id, "data" => %{"attributes" => answer_params}}) do
     answer = Repo.get!(Answer, id)
-    changeset = Answer.changeset(answer, answer_params)
+    changeset = Answer.update_changeset(answer, answer_params)
 
     case Repo.update(changeset) do
       {:ok, answer} ->
@@ -62,5 +69,18 @@ defmodule Howtosay.Api.V1.AnswerController do
     Repo.delete!(answer)
 
     send_resp(conn, :no_content, "")
+  end
+
+  defp authorize_for_own_resource(conn, _) do
+    user_id = with answer <- Repo.get(Answer, conn.params["id"]),
+                   do: answer.user_id
+    current_user_id = Guardian.Plug.current_resource(conn).id
+
+    case user_id do
+      ^current_user_id ->
+        conn
+      _ ->
+        conn |> put_status(403) |> json(nil) |> halt()
+    end
   end
 end

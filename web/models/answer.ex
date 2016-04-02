@@ -9,12 +9,15 @@ defmodule Howtosay.Answer do
     timestamps
   end
 
-  @required_fields ~w(text question_id)
-  @optional_fields ~w()
-
-  def changeset(model, params \\ :empty) do
+  def create_changeset(model, params \\ :empty) do
     model
-    |> cast(params, @required_fields, @optional_fields)
+    |> cast(params, ~w(text question_id user_id), [])
     |> foreign_key_constraint(:question_id)
+    |> foreign_key_constraint(:user_id)
+  end
+
+  def update_changeset(model, params \\ :empty) do
+    model
+    |> cast(params, ~w(text), [])
   end
 end
