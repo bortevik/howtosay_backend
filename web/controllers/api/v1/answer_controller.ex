@@ -74,13 +74,7 @@ defmodule Howtosay.Api.V1.AnswerController do
   defp authorize_for_own_resource(conn, _) do
     user_id = with answer <- Repo.get(Answer, conn.params["id"]),
                    do: answer.user_id
-    current_user_id = Guardian.Plug.current_resource(conn).id
 
-    case user_id do
-      ^current_user_id ->
-        conn
-      _ ->
-        conn |> put_status(403) |> json(nil) |> halt()
-    end
+    handle_own_resource_authorization(conn, user_id)
   end
 end

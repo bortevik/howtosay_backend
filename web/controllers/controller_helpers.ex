@@ -15,6 +15,17 @@ defmodule Howtosay.ControllerHelpers do
     |> json(get_error(error, conn))
   end
 
+  def handle_own_resource_authorization(conn, resource_user_id) do
+    current_user_id = Guardian.Plug.current_resource(conn).id
+
+    case resource_user_id do
+      ^current_user_id ->
+        conn
+      _ ->
+        conn |> put_status(403) |> json(nil) |> halt()
+    end
+  end
+
   def response_with_token(conn, user, claims, jwt) do
     exp = Map.get(claims, "exp")
     response_json = user |> UserSerializer.format(conn) |> Map.put(:token, jwt)
