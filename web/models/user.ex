@@ -11,6 +11,7 @@ defmodule Howtosay.User do
     field :confirmed_at, Ecto.DateTime
     field :password_reset_token, :string
     field :password, :string, virtual: true
+    field :language_to_ids, {:array, :integer}
 
     has_many :questions, Howtosay.Question
     has_many :answers, Howtosay.Answer
@@ -26,11 +27,12 @@ defmodule Howtosay.User do
     |> unique_constraint(:email)
     |> validate_format(:email, ~r/@/)
     |> put_password_hash()
+    |> cast_language_to_ids()
   end
 
   def registration_changeset(model, params \\ :empty) do
     model
-    |> cast(params, ~w(name email password), ~w(language_id))
+    |> cast(params, ~w(name email password), ~w(language_id language_to_ids))
     |> changeset()
     |> put_confirmation_token()
     |> ensure_lanuage_exists_or_default()
@@ -38,7 +40,7 @@ defmodule Howtosay.User do
 
   def update_changeset(model, params \\ :empty) do
     model
-    |> cast(params, [], ~w(name email password language_id))
+    |> cast(params, [], ~w(name email password language_id language_to_ids))
     |> changeset()
     |> ensure_not_nil(~w(name email password language_id)a)
     |> foreign_key_constraint(:language_id)
@@ -125,5 +127,29 @@ defmodule Howtosay.User do
         ensure_not_nil(changeset, tail)
     end
   end
+
+  defp cast_language_to_ids(changeset) do
+    case Changeset.get_change(changeset, :language_to_ids) do
+      nil ->
+        changeset
+      language_ids ->
+        casted_ids =
+          language_ids
+          |> Enum.map(&parse_integer/1)
+          |> Enum.filter(&(&1))
+
+        Changeset.put_change(changeset, :language_to_ids, casted_ids)
+        changeset
+    end
+  end
+
+  defp parse_integer(value) when is_integer(value), do: value
+  defp parse_integer(value) when is_binary(value) do
+    case Integer.parse(value) do
+      :error -> nil
+      {int, _} -> int
+    end
+  end
+  defp parse_integer(_), do: nil
 end
 
