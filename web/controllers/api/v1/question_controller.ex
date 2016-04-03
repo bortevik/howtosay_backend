@@ -15,6 +15,7 @@ defmodule Howtosay.Api.V1.QuestionController do
       |> filter_by_langauge_from(params["language_from_id"])
       |> filter_by_language_to(params["language_to_ids"])
       |> order_by(desc: :id)
+      |> preload(:user)
       |> Repo.paginate(page: params["page"]["page"] || 1, page_size: params["page"]["page_size"] || 100)
       |> QuestionSerializer.format(conn)
 
@@ -42,7 +43,9 @@ defmodule Howtosay.Api.V1.QuestionController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Repo.get(Question, id) do
+    question = Question |> preload(:user) |> Repo.get(id)
+
+    case question do
       nil ->
         conn |> put_status(404) |> json(nil)
       question ->

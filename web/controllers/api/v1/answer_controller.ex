@@ -14,6 +14,7 @@ defmodule Howtosay.Api.V1.AnswerController do
       Answer
       |> where(question_id: ^question_id)
       |> order_by(asc: :id)
+      |> preload(:user)
       |> Repo.all()
       |> AnswerSerializer.format(conn)
 
@@ -43,7 +44,9 @@ defmodule Howtosay.Api.V1.AnswerController do
   end
 
   def show(conn, %{"id" => id}) do
-    case Repo.get(Answer, id) do
+    answer = Answer |> preload(:user) |> Repo.get(id)
+
+    case answer do
       nil ->
         conn |> put_status(404) |> json(nil)
       answer ->

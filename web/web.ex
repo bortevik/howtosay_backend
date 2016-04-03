@@ -34,7 +34,7 @@ defmodule Howtosay.Web do
 
       alias Howtosay.Repo
       import Ecto
-      import Ecto.Query, only: [from: 1, from: 2, order_by: 2, where: 2, where: 3]
+      import Ecto.Query, only: [from: 1, from: 2, order_by: 2, where: 2, where: 3, preload: 2]
 
       import Howtosay.Router.Helpers
       import Howtosay.Gettext
