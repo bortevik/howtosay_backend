@@ -10,7 +10,7 @@ defmodule Howtosay.Api.V1.QuestionSerializer do
     serializer: Howtosay.Api.V1.UserSerializer,
     include: true
 
-  def user(question, conn) do
+  def user(question, _conn) do
     case question.user do
       %Ecto.Association.NotLoaded{} ->
         question

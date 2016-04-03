@@ -20,7 +20,7 @@ defmodule Howtosay.Api.V1.UserController do
         |> send_confirmation_email(user)
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
-        |> json(UserSerializer.format(user))
+        |> json(UserSerializer.format(user, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -43,7 +43,7 @@ defmodule Howtosay.Api.V1.UserController do
     case Repo.update(changeset) do
       {:ok, user} ->
         # if email changed send confirmation email
-        json conn, UserSerializer.format(user)
+        json conn, UserSerializer.format(user, conn)
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
