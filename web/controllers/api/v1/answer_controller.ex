@@ -44,9 +44,7 @@ defmodule Howtosay.Api.V1.AnswerController do
   end
 
   def show(conn, %{"id" => id}) do
-    answer = Answer |> preload(:user) |> Repo.get(id)
-
-    case answer do
+    case Repo.get(Answer, id) do
       nil ->
         conn |> put_status(404) |> json(nil)
       answer ->

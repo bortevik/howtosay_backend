@@ -9,4 +9,14 @@ defmodule Howtosay.Api.V1.QuestionSerializer do
   has_one :user,
     serializer: Howtosay.Api.V1.UserSerializer,
     include: true
+
+  def user(question, conn) do
+    case question.user do
+      %Ecto.Association.NotLoaded{} ->
+        question
+        |> Ecto.Model.assoc(:user)
+        |> Howtosay.Repo.one()
+      other -> other
+    end
+  end
 end
