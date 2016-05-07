@@ -20,3 +20,4 @@ defmodule Howtosay.Api.V1.QuestionSerializer do
     end
   end
 end
+
