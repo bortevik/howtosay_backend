@@ -78,9 +78,7 @@ defmodule Howtosay.Api.V1.QuestionController do
   defp filter_by_language_to(query, ids), do: query |> where([q], q.language_to_id in ^ids)
 
   defp authorize_for_own_resource(conn, _) do
-    user_id = with question <- Repo.get(Question, conn.params["id"]),
-                   do: question.user_id
-
-    handle_own_resource_authorization(conn, user_id)
+    with %Howtosay.Question{user_id: user_id} <- Repo.get(Question, conn.params["id"]),
+     do: handle_own_resource_authorization(conn, user_id)
   end
 end

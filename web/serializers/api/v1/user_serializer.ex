@@ -8,12 +8,9 @@ defmodule Howtosay.Api.V1.UserSerializer do
 
   def language_to_ids(user, conn) do
     user_id = user.id
-    current_user_id =
-      with current_user <- Guardian.Plug.current_resource(conn),
-       do: current_user.id
 
-    case current_user_id do
-      ^user_id -> user.language_to_ids
+    case Guardian.Plug.current_resource(conn) do
+      %Howtosay.User{id: ^user_id} -> user.language_to_ids
       _ -> []
     end
   end

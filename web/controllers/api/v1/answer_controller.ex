@@ -73,9 +73,7 @@ defmodule Howtosay.Api.V1.AnswerController do
   end
 
   defp authorize_for_own_resource(conn, _) do
-    user_id = with answer <- Repo.get(Answer, conn.params["id"]),
-                   do: answer.user_id
-
-    handle_own_resource_authorization(conn, user_id)
+    with %Howtosay.Answer{user_id: user_id} <- Repo.get(Answer, conn.params["id"]),
+     do: handle_own_resource_authorization(conn, user_id)
   end
 end
