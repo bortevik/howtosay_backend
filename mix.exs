@@ -44,7 +44,9 @@ defmodule Howtosay.Mixfile do
       {:faker, "~> 0.5", only: [:test, :dev]},
       {:phoenix_html, "~> 2.5.0"},
       {:mailgun, "~> 0.1.2"},
-      {:scrivener, "~> 1.1.2"}
+      {:scrivener, "~> 1.1.2"},
+      {:credo, "~> 0.4.1", only: [:dev, :test]},
+      {:dialyxir, "~> 0.3.3", only: [:dev, :test]}
     ]
   end
 

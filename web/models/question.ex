@@ -3,6 +3,7 @@ defmodule Howtosay.Question do
 
   schema "questions" do
     field :text, :string
+    field :votes, :integer
 
     has_many :answers, Howtosay.Answer
     belongs_to :user, Howtosay.User
@@ -23,5 +24,9 @@ defmodule Howtosay.Question do
   def update_changeset(model, params \\ :empty) do
     model
     |> cast(params, ~w(text), [])
+  end
+
+  def changeset(:votes, model, params) do
+    model |> cast(params, ~w(votes), [])
   end
 end
