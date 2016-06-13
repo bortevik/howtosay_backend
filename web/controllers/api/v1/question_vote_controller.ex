@@ -20,7 +20,7 @@ defmodule Howtosay.Api.V1.QuestionVoteController do
 
         conn
         |> put_status(:created)
-        |> put_resp_header("location", vote_path(conn, :show, vote))
+        |> put_resp_header("location", question_vote_path(conn, :show, vote))
         |> json(QuestionVoteSerializer.format(vote, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
