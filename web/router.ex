@@ -15,17 +15,19 @@ defmodule Howtosay.Router do
 
     scope "/v1", V1 do
       post "/signin", SessionController, :create, as: :signin
-      post "/token_refresh", SessionController, :update, as: :token_refresh
+      post "/refresh_token", SessionController, :update, as: :refresh_token
       delete "/signout", SessionController, :delete, as: :signout
 
       resources "/languages", LanguageController, only: [:index, :show]
       resources "/questions", QuestionController, except: [:new, :edit]
       resources "/answers", AnswerController, except: [:new, :edit]
-      resources "/users", UserController, except: [:new, :edit, :index]
+      resources "/users", UserController, except: [:new, :edit]
       resources "/question_votes", QuestionVoteController, only: [:show, :create]
 
-      post "/users/email_confirmation", UserController, :email_confirmation, as: :email_confirmation
-      post "/users/resend_confirmation_email", UserController, :resend_confirmation_email, as: :resend_confirmation_email
+      get "/current_user", UserController, :current_user, as: :current_user
+
+      post "/confirm_email", EmailConfirmationController, :confirm_email, as: :confirm_email
+      post "/resend_confirmation_email", EmailConfirmationController, :resend_confirmation_email, as: :resend_confirmation_email
     end
   end
 end

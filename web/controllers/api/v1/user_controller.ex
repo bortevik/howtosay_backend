@@ -4,11 +4,18 @@ defmodule Howtosay.Api.V1.UserController do
   alias Howtosay.User
   alias Howtosay.Api.V1.{SessionController, UserSerializer}
 
-  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when action in [:update, :delete]
+  plug Guardian.Plug.EnsureAuthenticated, %{ handler: SessionController} when action in [:update, :delete, :current_user]
   plug :authorize_for_own_resource when action in [:update, :delete]
   plug :scrub_params, "data" when action in [:create, :update]
-  plug :scrub_params, "token" when action in [:email_confirmation]
-  plug :scrub_params, "email" when action in [:resend_confirmation_email]
+
+  def current_user(conn, _) do
+    case Guardian.Plug.current_resource(conn) do
+      nil ->
+        send_resp(conn, 401, "")
+      user ->
+        json conn, UserSerializer.format(user, conn)
+    end
+  end
 
   def create(conn, %{"data" => %{"attributes" => params, "relationships" => relations}}) do
     user_params = apply_relation(params, relations, "language")
@@ -56,46 +63,9 @@ defmodule Howtosay.Api.V1.UserController do
     send_resp(conn, :no_content, "")
   end
 
-  def email_confirmation(conn, %{"token" => token}) do
-    result = with %User{} = user <- Repo.get_by(User, confirmation_token: token),
-              do: Repo.confirm_email(user)
-
-    case result do
-      {:ok, user} ->
-        new_conn = Guardian.Plug.api_sign_in(conn, user)
-        {:ok, claims} = Guardian.Plug.claims(new_conn)
-        jwt = Guardian.Plug.current_token(new_conn)
-
-        response_with_token(new_conn, user, claims, jwt)
-      _ ->
-        conn |> put_status(422) |> json(nil)
-    end
-  end
-
-  def resend_confirmation_email(conn, %{"email" => email}) do
-    user = Repo.get_by(User, email: email)
-
-    case user do
-      nil ->
-        conn |> put_status(404) |> json(nil)
-      user ->
-        send_confirmation_email(conn, user)
-        |> put_status(200)
-        |> json(nil)
-    end
-  end
-
   defp authorize_for_own_resource(conn, _) do
     user_id = conn.params["id"] |> String.to_integer()
 
     handle_own_resource_authorization(conn, user_id)
-  end
-
-  defp send_confirmation_email(conn, user) do
-    client_host = Application.get_env :howtosay, :client_host
-    link = client_host <> "/email_confirmation/" <> user.confirmation_token
-
-    Howtosay.Mailer.send_confirmation_email(user.email, %{confirmation_link: link})
-    conn
   end
 end

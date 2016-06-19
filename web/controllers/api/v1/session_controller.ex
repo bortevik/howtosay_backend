@@ -19,7 +19,7 @@ defmodule Howtosay.Api.V1.SessionController do
         {:ok, claims} = Guardian.Plug.claims(new_conn)
         jwt = Guardian.Plug.current_token(new_conn)
 
-        response_with_token(new_conn, user, claims, jwt)
+        respond_with_token(new_conn, claims, jwt)
       else
         case Keyword.fetch(changeset.errors, :email) do
           {:ok, message} ->
@@ -39,7 +39,7 @@ defmodule Howtosay.Api.V1.SessionController do
 
     case Guardian.refresh!(jwt) do
       {:ok, new_jwt, new_claims} ->
-        response_with_token(conn, user, new_claims, new_jwt)
+        respond_with_token(conn, new_claims, new_jwt)
       {:error, _reason} ->
         send_resp(conn, 401, "")
     end
@@ -55,5 +55,14 @@ defmodule Howtosay.Api.V1.SessionController do
 
   def unauthenticated(conn, _params) do
     send_resp(conn, 401, "")
+  end
+
+  defp respond_with_token(conn, claims, jwt) do
+    exp = Map.get(claims, "exp")
+
+    conn
+    |> put_resp_header("authorization", "Bearer #{jwt}")
+    |> put_resp_header("x-expires", "#{exp}")
+    |> json(%{token: jwt})
   end
 end

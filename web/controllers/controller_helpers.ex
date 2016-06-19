@@ -26,19 +26,17 @@ defmodule Howtosay.ControllerHelpers do
     end
   end
 
-  def response_with_token(conn, user, claims, jwt) do
-    exp = Map.get(claims, "exp")
-    response_json = user |> UserSerializer.format(conn) |> Map.put(:token, jwt)
-
-    conn
-    |> put_resp_header("authorization", "Bearer #{jwt}")
-    |> put_resp_header("x-expires", "#{exp}")
-    |> json(response_json)
-  end
-
   defp get_error(%Ecto.Changeset{} = changeset, conn) do
     JaSerializer.EctoErrorSerializer.format(changeset, conn)
   end
 
   defp get_error(error, _), do: error
+
+  def send_confirmation_email(conn, user) do
+    client_host = Application.get_env :howtosay, :client_host
+    link = client_host <> "/confirm-email/" <> user.confirmation_token
+
+    Howtosay.Mailer.send_confirmation_email(user.email, %{confirmation_link: link})
+    conn
+  end
 end
