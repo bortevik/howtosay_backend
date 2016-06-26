@@ -12,7 +12,7 @@ defmodule Howtosay.Api.V1.QuestionVoteController do
       |> apply_relation(relations, "question")
       |> Map.put("user_id", current_user_id)
 
-    changeset = QuestionVote.create_changeset(%QuestionVote{}, params)
+    changeset = QuestionVote.changeset(:create, %QuestionVote{}, params)
 
     case Repo.insert(changeset) do
       {:ok, vote} ->
@@ -21,7 +21,7 @@ defmodule Howtosay.Api.V1.QuestionVoteController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", question_vote_path(conn, :show, vote))
-        |> json(QuestionVoteSerializer.format(vote, conn))
+        |> json(serialize(vote, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -32,12 +32,16 @@ defmodule Howtosay.Api.V1.QuestionVoteController do
       nil ->
         conn |> put_status(404) |> json(nil)
       answer ->
-        json conn, QuestionVoteSerializer.format(answer, conn)
+        json conn, serialize(answer, conn)
     end
   end
 
   defp calculate_question_votes(%QuestionVote{vote: vote, question_id: question_id}) do
-    with %Question{} = question <- Repo.get(Question, vote.question_id),
+    with %Question{} = question <- Repo.get(Question, question_id),
      do: Repo.update(question, votes: question.votes + vote)
+  end
+
+  defp serialize(data, conn) do
+    JaSerializer.format(QuestionVoteSerializer, data, conn)
   end
 end

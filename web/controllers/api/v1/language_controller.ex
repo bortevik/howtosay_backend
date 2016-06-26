@@ -8,7 +8,7 @@ defmodule Howtosay.Api.V1.LanguageController do
     languages =
       Language
       |> Repo.all()
-      |> LanguageSerializer.format(conn)
+      |> serialize(conn)
 
     json(conn, languages)
   end
@@ -18,7 +18,11 @@ defmodule Howtosay.Api.V1.LanguageController do
       nil ->
         conn |> put_status(404) |> json(nil)
       answer ->
-        json conn, LanguageSerializer.format(answer, conn)
+        json conn, serialize(answer, conn)
     end
+  end
+
+  defp serialize(data, conn) do
+    JaSerializer.format(LanguageSerializer, data, conn)
   end
 end

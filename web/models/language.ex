@@ -13,7 +13,7 @@ defmodule Howtosay.Language do
 
   @required_fields ~w(name code)
 
-  # def changeset(model, params \\ :empty) do
+  # def changeset(model, params \\ %{}) do
   #   model
   #   |> cast(params, @required_fields, [])
   # end

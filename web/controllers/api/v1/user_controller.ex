@@ -13,7 +13,7 @@ defmodule Howtosay.Api.V1.UserController do
       nil ->
         send_resp(conn, 401, "")
       user ->
-        json conn, UserSerializer.format(user, conn)
+        json conn, serialize(user, conn)
     end
   end
 
@@ -27,7 +27,7 @@ defmodule Howtosay.Api.V1.UserController do
         |> send_confirmation_email(user)
         |> put_status(:created)
         |> put_resp_header("location", user_path(conn, :show, user))
-        |> json(UserSerializer.format(user, conn))
+        |> json(serialize(user, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -38,7 +38,7 @@ defmodule Howtosay.Api.V1.UserController do
       nil ->
         conn |> put_status(404) |> json(nil)
       answer ->
-        json conn, UserSerializer.format(answer, conn)
+        json conn, serialize(answer, conn)
     end
   end
 
@@ -50,7 +50,7 @@ defmodule Howtosay.Api.V1.UserController do
     case Repo.update(changeset) do
       {:ok, user} ->
         # if email changed send confirmation email
-        json conn, UserSerializer.format(user, conn)
+        json conn, serialize(user, conn)
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -67,5 +67,9 @@ defmodule Howtosay.Api.V1.UserController do
     user_id = conn.params["id"] |> String.to_integer()
 
     handle_own_resource_authorization(conn, user_id)
+  end
+
+  defp serialize(data, conn) do
+    JaSerializer.format(UserSerializer, data, conn)
   end
 end

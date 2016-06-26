@@ -9,14 +9,14 @@ defmodule Howtosay.Answer do
     timestamps
   end
 
-  def create_changeset(model, params \\ :empty) do
+  def create_changeset(model, params \\ %{}) do
     model
     |> cast(params, ~w(text question_id user_id), [])
     |> foreign_key_constraint(:question_id)
     |> foreign_key_constraint(:user_id)
   end
 
-  def update_changeset(model, params \\ :empty) do
+  def update_changeset(model, params \\ %{}) do
     model
     |> cast(params, ~w(text), [])
   end

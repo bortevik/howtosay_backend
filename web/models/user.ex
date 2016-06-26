@@ -30,7 +30,7 @@ defmodule Howtosay.User do
     |> cast_language_to_ids()
   end
 
-  def registration_changeset(model, params \\ :empty) do
+  def registration_changeset(model, params \\ %{}) do
     model
     |> cast(params, ~w(name email password), ~w(language_id language_to_ids))
     |> changeset()
@@ -38,7 +38,7 @@ defmodule Howtosay.User do
     |> ensure_lanuage_exists_or_default()
   end
 
-  def update_changeset(model, params \\ :empty) do
+  def update_changeset(model, params \\ %{}) do
     model
     |> cast(params, [], ~w(name email password language_id language_to_ids))
     |> changeset()
@@ -93,7 +93,7 @@ defmodule Howtosay.User do
 
   defp fetch_confirmation(changeset) do
     case Changeset.fetch_field(changeset, :confirmed_at) do
-      {:model, %Ecto.DateTime{}} -> changeset
+      {:data, %Ecto.DateTime{}} -> changeset
       _ -> Changeset.add_error(changeset, :email, "is not confirmed")
     end
   end

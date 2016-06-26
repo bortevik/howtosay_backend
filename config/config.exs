@@ -5,10 +5,12 @@
 # is restricted to this project.
 use Mix.Config
 
+# General application configuration
+config :howtosay, ecto_repos: [Howtosay.Repo]
+
 # Configures the endpoint
 config :howtosay, Howtosay.Endpoint,
   url: [host: "localhost"],
-  root: Path.dirname(__DIR__),
   secret_key_base: "aTF6qzV/5ZwO8TyfYgMb3tK1fU4IVwAspt5AvsS+X/G8+ATEMcnYubrAoKrhWUq9",
   render_errors: [accepts: ~w(json)],
   pubsub: [name: Howtosay.PubSub,

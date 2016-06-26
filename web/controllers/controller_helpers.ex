@@ -2,8 +2,6 @@ defmodule Howtosay.ControllerHelpers do
   import Plug.Conn
   import Phoenix.Controller, only: [json: 2]
 
-  alias Howtosay.Api.V1.UserSerializer
-
   def apply_relation(params, relations, relation) do
     id = relations[relation]["data"]["id"]
     Map.put(params, relation <> "_id", id)

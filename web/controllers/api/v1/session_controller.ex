@@ -22,7 +22,7 @@ defmodule Howtosay.Api.V1.SessionController do
         respond_with_token(new_conn, claims, jwt)
       else
         case Keyword.fetch(changeset.errors, :email) do
-          {:ok, message} ->
+          {:ok, {message, []}} ->
             error_json(conn, 401, %{error: "Email " <> message})
           :error ->
             error_json(conn, 401, %{error: "Wrong email or password"})
@@ -35,7 +35,6 @@ defmodule Howtosay.Api.V1.SessionController do
 
   def update(conn, _params) do
     jwt = Guardian.Plug.current_token(conn)
-    user = Guardian.Plug.current_resource(conn)
 
     case Guardian.refresh!(jwt) do
       {:ok, new_jwt, new_claims} ->

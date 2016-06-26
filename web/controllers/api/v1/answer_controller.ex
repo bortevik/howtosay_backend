@@ -16,7 +16,7 @@ defmodule Howtosay.Api.V1.AnswerController do
       |> order_by(asc: :id)
       |> preload(:user)
       |> Repo.all()
-      |> AnswerSerializer.format(conn)
+      |> serialize(conn)
 
     json(conn, answers)
   end
@@ -37,7 +37,7 @@ defmodule Howtosay.Api.V1.AnswerController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", answer_path(conn, :show, answer))
-        |> json(AnswerSerializer.format(answer, conn))
+        |> json(serialize(answer, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -48,7 +48,7 @@ defmodule Howtosay.Api.V1.AnswerController do
       nil ->
         conn |> put_status(404) |> json(nil)
       answer ->
-        json conn, AnswerSerializer.format(answer, conn)
+        json conn, serialize(answer, conn)
     end
   end
 
@@ -58,7 +58,7 @@ defmodule Howtosay.Api.V1.AnswerController do
 
     case Repo.update(changeset) do
       {:ok, answer} ->
-        json(conn, AnswerSerializer.format(answer, conn))
+        json(conn, serialize(answer, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -75,5 +75,9 @@ defmodule Howtosay.Api.V1.AnswerController do
   defp authorize_for_own_resource(conn, _) do
     with %Howtosay.Answer{user_id: user_id} <- Repo.get(Answer, conn.params["id"]),
      do: handle_own_resource_authorization(conn, user_id)
+  end
+
+  defp serialize(data, conn) do
+    JaSerializer.format(AnswerSerializer, data, conn)
   end
 end

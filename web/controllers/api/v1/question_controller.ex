@@ -17,7 +17,7 @@ defmodule Howtosay.Api.V1.QuestionController do
       |> order_by(desc: :id)
       |> preload(:user)
       |> Repo.paginate(page: params["page"]["page"] || 1, page_size: params["page"]["page_size"] || 100)
-      |> QuestionSerializer.format(conn)
+      |> serialize(conn)
 
     json(conn, questions)
   end
@@ -36,7 +36,7 @@ defmodule Howtosay.Api.V1.QuestionController do
         conn
         |> put_status(:created)
         |> put_resp_header("location", question_path(conn, :show, question))
-        |> json(QuestionSerializer.format(question, conn))
+        |> json(serialize(question, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -47,7 +47,7 @@ defmodule Howtosay.Api.V1.QuestionController do
       nil ->
         conn |> put_status(404) |> json(nil)
       question ->
-        json conn, QuestionSerializer.format(question, conn)
+        json conn, serialize(question, conn)
     end
   end
 
@@ -57,7 +57,7 @@ defmodule Howtosay.Api.V1.QuestionController do
 
     case Repo.update(changeset) do
       {:ok, question} ->
-        json(conn, QuestionSerializer.format(question, conn))
+        json(conn, serialize(question, conn))
       {:error, changeset} ->
         error_json conn, 422, changeset
     end
@@ -80,5 +80,9 @@ defmodule Howtosay.Api.V1.QuestionController do
   defp authorize_for_own_resource(conn, _) do
     with %Howtosay.Question{user_id: user_id} <- Repo.get(Question, conn.params["id"]),
      do: handle_own_resource_authorization(conn, user_id)
+  end
+
+  defp serialize(data, conn) do
+    JaSerializer.format(QuestionSerializer, data, conn)
   end
 end

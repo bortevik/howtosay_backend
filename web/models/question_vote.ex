@@ -9,7 +9,7 @@ defmodule Howtosay.QuestionVote do
     timestamps
   end
 
-  def changeset(model, params \\ :empty) do
+  def changeset(:create, model, params \\ %{}) do
     model
     |> cast(params, ~w(vote user_id question_id), [])
     |> validate_inclusion(:vote, [1, -1])
