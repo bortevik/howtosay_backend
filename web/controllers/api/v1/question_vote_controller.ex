@@ -38,7 +38,8 @@ defmodule Howtosay.Api.V1.QuestionVoteController do
 
   defp calculate_question_votes(%QuestionVote{vote: vote, question_id: question_id}) do
     with %Question{} = question <- Repo.get(Question, question_id),
-     do: Repo.update(question, votes: question.votes + vote)
+         %Ecto.Changeset{} = changeset <- Ecto.Changeset.change(question, votes: question.votes + vote),
+     do: Repo.update(changeset)
   end
 
   defp serialize(data, conn) do
