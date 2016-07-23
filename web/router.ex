@@ -23,6 +23,7 @@ defmodule Howtosay.Router do
       resources "/answers", AnswerController, except: [:new, :edit]
       resources "/users", UserController, except: [:new, :edit]
       resources "/question_votes", QuestionVoteController, only: [:show, :create]
+      resources "/answer_votes", AnswerVoteController, only: [:show, :create]
 
       get "/current_user", UserController, :current_user, as: :current_user
 

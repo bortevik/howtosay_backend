@@ -37,6 +37,7 @@ defmodule Howtosay.Seed do
     question =
       %Question{
         text: Faker.Lorem.Shakespeare.as_you_like_it,
+        votes: round(:random.uniform() * 10),
         user_id: user.id,
         language_from_id: user.language_id,
         language_to_id: get_random_language().id
@@ -47,7 +48,11 @@ defmodule Howtosay.Seed do
   end
 
   def create_answer(user, question) do
-    insert! %Answer{text: Faker.Lorem.Shakespeare.Ru.romeo_and_juliet, question_id: question.id, user_id: user.id}
+    insert! %Answer{
+      text: Faker.Lorem.Shakespeare.Ru.romeo_and_juliet,
+      question_id: question.id,
+      user_id: user.id
+    }
   end
 
   def create_languages() do

@@ -25,8 +25,4 @@ defmodule Howtosay.Question do
     model
     |> cast(params, ~w(text), [])
   end
-
-  def changeset(:votes, model, params) do
-    model |> cast(params, ~w(votes), [])
-  end
 end

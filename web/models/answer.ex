@@ -3,6 +3,8 @@ defmodule Howtosay.Answer do
 
   schema "answers" do
     field :text, :string
+    field :votes, :integer
+
     belongs_to :question, Howtosay.Question
     belongs_to :user, Howtosay.User
 

@@ -6,7 +6,7 @@ defmodule Howtosay.QuestionVote do
     belongs_to :user, Howtosay.User
     belongs_to :question, Howtosay.Question
 
-    timestamps
+    timestamps()
   end
 
   def changeset(:create, model, params \\ %{}) do
