@@ -14,7 +14,7 @@ defmodule Howtosay.Api.V1.AnswerSerializer do
     case answer.user do
       %Ecto.Association.NotLoaded{} ->
         answer
-        |> Ecto.Model.assoc(:user)
+        |> Ecto.assoc(:user)
         |> Howtosay.Repo.one()
       other -> other
     end
