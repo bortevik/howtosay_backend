@@ -3,7 +3,7 @@ defmodule Howtosay.Repo.Migrations.AddVotesToAnswers do
 
   def change do
     alter table(:answers) do
-      add :votes, :integer, default: 0
+      add :votes, :integer, default: 0, null: false
     end
   end
 end

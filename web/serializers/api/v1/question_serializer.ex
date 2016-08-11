@@ -30,5 +30,9 @@ defmodule Howtosay.Api.V1.QuestionSerializer do
     |> select([a], count(a.id))
     |> Repo.one()
   end
+
+  def votes(question, _conn) do
+    question.votes || 0
+  end
 end
 

@@ -19,4 +19,8 @@ defmodule Howtosay.Api.V1.AnswerSerializer do
       other -> other
     end
   end
+
+  def votes(answer, _conn) do
+    answer.votes || 0
+  end
 end
