@@ -24,13 +24,6 @@ defmodule Howtosay.Api.V1.QuestionSerializer do
     end
   end
 
-  def answers_count(question, _conn) do
-    Howtosay.Answer
-    |> where(question_id: ^question.id)
-    |> select([a], count(a.id))
-    |> Repo.one()
-  end
-
   def votes(question, _conn) do
     question.votes || 0
   end

@@ -12,11 +12,16 @@ defmodule Howtosay.Api.V1.QuestionController do
   def index(conn, params) do
     questions =
       Question
+      |> join(:left, [q], a in assoc(q, :answers))
+      |> group_by([q], q.id)
+      |> preload(:user)
+      |> select([q, a], [q, count(a.id)])
       |> filter_by_langauge_from(params["language_from_id"])
       |> filter_by_language_to(params["language_to_ids"])
       |> order_by(desc: :id)
       |> preload(:user)
       |> Repo.paginate(page: params["page"]["page"] || 1, page_size: params["page"]["page_size"] || 100)
+      |> Enum.map(fn [question, answers_count] -> Map.put(question, :answers_count, answers_count) end)
       |> serialize(conn)
 
     json(conn, questions)
