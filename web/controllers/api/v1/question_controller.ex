@@ -10,7 +10,7 @@ defmodule Howtosay.Api.V1.QuestionController do
   plug :scrub_params, "data" when action in [:create, :update]
 
   def index(conn, params) do
-    questions =
+    questions_page =
       Question
       |> join(:left, [q], a in assoc(q, :answers))
       |> group_by([q], q.id)
@@ -21,10 +21,15 @@ defmodule Howtosay.Api.V1.QuestionController do
       |> order_by(desc: :id)
       |> preload(:user)
       |> Repo.paginate(page: params["page"]["page"] || 1, page_size: params["page"]["page_size"] || 100)
-      |> Enum.map(fn [question, answers_count] -> Map.put(question, :answers_count, answers_count) end)
+
+    questions = Enum.map(questions_page.entries, fn [question, answers_count] -> Map.put(question, :answers_count, answers_count) end)
+
+    serialized_page =
+      questions_page
+      |> Map.put(:entries, questions)
       |> serialize(conn)
 
-    json(conn, questions)
+    json(conn, serialized_page)
   end
 
   def create(conn, %{"data" => %{"attributes" => params, "relationships" => relations}}) do

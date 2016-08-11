@@ -30,7 +30,7 @@ defmodule Howtosay.Seed do
       }
       |> insert!()
 
-    Enum.each 1..10, fn _ -> create_question(user) end
+    Enum.each 1..50, fn _ -> create_question(user) end
   end
 
   def create_question(user) do
