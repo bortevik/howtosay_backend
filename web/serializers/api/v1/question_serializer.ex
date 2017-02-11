@@ -2,7 +2,6 @@ defmodule Howtosay.Api.V1.QuestionSerializer do
   use JaSerializer
 
   alias Howtosay.Repo
-  import Ecto.Query, only: [where: 2, select: 3]
   import Ecto, only: [assoc: 2]
 
   location "/api/v1/questions/:id"

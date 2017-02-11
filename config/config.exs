@@ -27,7 +27,7 @@ config :phoenix, :generators,
   binary_id: false
 
 config :phoenix, :format_encoders, "json-api": Poison
-config :plug, :mimes, %{"application/vnd.api+json" => ["json-api"]}
+config :plug, :types, %{"application/vnd.api+json" => ["json-api"]}
 
 config :guardian, Guardian,
   issuer: "Howtosay.#{Mix.env}",

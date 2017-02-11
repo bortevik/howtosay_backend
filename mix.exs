@@ -10,7 +10,8 @@ defmodule Howtosay.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases,
-     deps: deps]
+     deps: deps,
+     dialyzer: [plt_add_deps: :transitive]]
   end
 
   # Configuration for the OTP application.
@@ -31,24 +32,24 @@ defmodule Howtosay.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.2.0"},
+      {:phoenix, "~> 1.2.1"},
       {:phoenix_pubsub, "~> 1.0"},
       {:phoenix_ecto, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:ja_serializer, "0.10.0"},
+      {:ja_serializer, "~> 0.11.1"},
       {:cors_plug, "~> 1.1"},
-      {:guardian, "~> 0.12.0"},
+      {:guardian, "~> 0.13.0"},
       {:guardian_db, "0.7.0"},
-      {:comeonin, "~> 2.5"},
-      {:faker, "~> 0.6", only: [:test, :dev]},
-      {:phoenix_html, "~> 2.6.0"},
+      {:comeonin, "~> 2.6"},
+      {:faker, "~> 0.7", only: [:test, :dev]},
+      {:phoenix_html, "~> 2.7.0"},
       {:mailgun, "~> 0.1.2"},
       {:scrivener_ecto, "~> 1.0"},
-      {:scrivener, "~> 2.0", override: true},
-      {:credo, "~> 0.4.1", only: [:dev, :test]},
-      {:dialyxir, "~> 0.3.3", only: [:dev, :test]}
+      {:scrivener, "~> 2.1", override: true},
+      {:credo, "~> 0.4", only: [:dev, :test]},
+      {:dialyxir, "~> 0.3.5", only: [:dev, :test]}
     ]
   end
 
