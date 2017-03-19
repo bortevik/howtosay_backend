@@ -5,7 +5,7 @@ defmodule Howtosay.Repo.Migrations.CreateQuestion do
     create table(:questions) do
       add :text, :text
 
-      timestamps
+      timestamps()
     end
 
   end

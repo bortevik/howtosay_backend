@@ -10,7 +10,7 @@ defmodule Howtosay.Question do
     belongs_to :language_from, Howtosay.Language
     belongs_to :language_to, Howtosay.Language
 
-    timestamps
+    timestamps()
   end
 
   def create_changeset(model, params \\ %{}) do

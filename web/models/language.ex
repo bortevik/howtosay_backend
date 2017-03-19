@@ -8,10 +8,10 @@ defmodule Howtosay.Language do
     has_many :users, Howtosay.User
     has_many :questions, Howtosay.Question
 
-    timestamps
+    timestamps()
   end
 
-  @required_fields ~w(name code)
+  # @required_fields ~w(name code)
 
   # def changeset(model, params \\ %{}) do
   #   model

@@ -11,7 +11,7 @@ defmodule Howtosay.Repo.Migrations.CreateUser do
       add :confirmed_at, :datetime
       add :password_reset_token, :text
 
-      timestamps
+      timestamps()
     end
 
     create unique_index(:users, [:email], concurrently: true)

@@ -10,7 +10,7 @@ defmodule Howtosay.Api.V1.UserSerializer do
     user_id = user.id
 
     case Guardian.Plug.current_resource(conn) do
-      %Howtosay.User{id: ^user_id} -> user.language_to_ids
+      %Howtosay.User{id: ^user_id} -> user.language_to_ids || []
       _ -> []
     end
   end

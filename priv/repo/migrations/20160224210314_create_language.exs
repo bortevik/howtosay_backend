@@ -7,7 +7,7 @@ defmodule Howtosay.Repo.Migrations.CreateLanguage do
       add :name, :string, null: false
       add :code, :string, null: false
 
-      timestamps
+      timestamps()
     end
 
     create unique_index(:languages, [:name], concurrently: true)

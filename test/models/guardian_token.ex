@@ -15,7 +15,7 @@ defmodule Howtosay.GuardianToken do
     field :jwt, :string
     field :claims, :map
 
-    timestamps
+    timestamps()
   end
 
   # def for_user(user) do

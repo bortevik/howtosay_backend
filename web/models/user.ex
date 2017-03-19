@@ -17,7 +17,7 @@ defmodule Howtosay.User do
     has_many :answers, Howtosay.Answer
     belongs_to :language, Howtosay.Language
 
-    timestamps
+    timestamps()
   end
 
   def changeset(changeset) do

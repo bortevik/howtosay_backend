@@ -8,7 +8,7 @@ defmodule Howtosay.Answer do
     belongs_to :question, Howtosay.Question
     belongs_to :user, Howtosay.User
 
-    timestamps
+    timestamps()
   end
 
   def create_changeset(model, params \\ %{}) do

@@ -6,9 +6,8 @@ defmodule Howtosay.Repo.Migrations.CreateAnswer do
       add :text, :text
       add :question_id, references(:questions, on_delete: :delete_all)
 
-      timestamps
+      timestamps()
     end
     create index(:answers, [:question_id])
-
   end
 end
